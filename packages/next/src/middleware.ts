@@ -1,22 +1,52 @@
-import { detectAgent } from '@agent-seo/core';
+import { detectAgent } from '@agent-seo/core/edge';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
+/**
+ * Creates a Next.js middleware that:
+ * 1. Detects AI bot requests via User-Agent
+ * 2. Rewrites AI bot requests to an internal transform API route
+ *    that converts HTML → Markdown (runs on Node.js runtime)
+ * 3. Handles `.md` suffix requests (e.g. `/about.md` → transform `/about`)
+ * 4. Sets `Vary: Accept, User-Agent` on all responses
+ */
 export function createAgentSeoMiddleware() {
-  return function middleware(request: Request) {
+  return function middleware(request: NextRequest) {
+    const { pathname } = request.nextUrl;
+
+    // Skip internal paths and static assets
+    if (
+      pathname.startsWith('/_next') ||
+      pathname.startsWith('/api/agent-seo-transform') ||
+      pathname === '/favicon.ico' ||
+      pathname === '/llms.txt' ||
+      pathname === '/llms-full.txt'
+    ) {
+      return NextResponse.next();
+    }
+
     const ua = request.headers.get('user-agent');
     const accept = request.headers.get('accept');
     const aiCtx = detectAgent(ua, accept);
 
-    const headers = new Headers();
-    headers.set('Vary', 'Accept, User-Agent');
-
-    if (aiCtx.isAIBot) {
-      headers.set('X-Agent-Bot', aiCtx.bot?.name || 'unknown');
-      headers.set('X-Agent-Purpose', aiCtx.bot?.purpose || 'unknown');
+    // Handle explicit .md suffix requests (e.g. /about.md)
+    if (pathname.endsWith('.md')) {
+      const originalPath = pathname.slice(0, -3) || '/';
+      const transformUrl = new URL('/api/agent-seo-transform', request.url);
+      transformUrl.searchParams.set('path', originalPath);
+      return NextResponse.rewrite(transformUrl);
     }
 
-    return new Response(null, {
-      status: 200,
-      headers,
-    });
+    // If AI bot, rewrite to transform API
+    if (aiCtx.isAIBot) {
+      const transformUrl = new URL('/api/agent-seo-transform', request.url);
+      transformUrl.searchParams.set('path', pathname);
+      return NextResponse.rewrite(transformUrl);
+    }
+
+    // Normal request — just add Vary header
+    const response = NextResponse.next();
+    response.headers.set('Vary', 'Accept, User-Agent');
+    return response;
   };
 }
