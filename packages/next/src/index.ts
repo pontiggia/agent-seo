@@ -1,6 +1,7 @@
 export { withAgentSeo } from './plugin.js';
 export type { WithAgentSeoOptions } from './plugin.js';
 export { createAgentSeoMiddleware } from './middleware.js';
+export type { AgentSeoMiddlewareOptions } from './middleware.js';
 export { createLlmsTxtHandler } from './route-handler.js';
 export type { LlmsTxtHandlerOptions } from './route-handler.js';
 export {

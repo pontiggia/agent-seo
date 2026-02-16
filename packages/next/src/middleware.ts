@@ -2,6 +2,31 @@ import { detectAgent } from '@agent-seo/core/edge';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+export interface AgentSeoMiddlewareOptions {
+  /**
+   * Glob patterns for paths that should NEVER be rewritten to Markdown.
+   * Merged with built-in defaults (see `DEFAULT_EXCLUDE`).
+   *
+   * @example ['\/dashboard\/**', '\/admin\/**', '\/api\/private\/**']
+   */
+  exclude?: string[];
+}
+
+/** Paths that are always skipped — framework internals + standard files. */
+const ALWAYS_SKIP = new Set([
+  '/favicon.ico',
+  '/robots.txt',
+  '/sitemap.xml',
+  '/llms.txt',
+  '/llms-full.txt',
+]);
+
+/** Default exclude patterns — users can extend but not remove these. */
+const DEFAULT_EXCLUDE: string[] = [
+  '/api/**',
+  '/_next/**',
+];
+
 /**
  * Creates a Next.js middleware that:
  * 1. Detects AI bot requests via User-Agent
@@ -10,18 +35,19 @@ import type { NextRequest } from 'next/server';
  * 3. Handles `.md` suffix requests (e.g. `/about.md` → transform `/about`)
  * 4. Sets `Vary: Accept, User-Agent` on all responses
  */
-export function createAgentSeoMiddleware() {
+export function createAgentSeoMiddleware(options: AgentSeoMiddlewareOptions = {}) {
+  const excludePatterns = [...DEFAULT_EXCLUDE, ...(options.exclude || [])];
+
   return function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Skip internal paths and static assets
-    if (
-      pathname.startsWith('/_next') ||
-      pathname.startsWith('/api/agent-seo-transform') ||
-      pathname === '/favicon.ico' ||
-      pathname === '/llms.txt' ||
-      pathname === '/llms-full.txt'
-    ) {
+    // Skip standard files (robots.txt, favicon, llms.txt, etc.)
+    if (ALWAYS_SKIP.has(pathname)) {
+      return NextResponse.next();
+    }
+
+    // Skip excluded patterns (API routes, admin, dashboard, etc.)
+    if (isExcluded(pathname, excludePatterns)) {
       return NextResponse.next();
     }
 
@@ -61,4 +87,16 @@ function setBotHeaders(response: NextResponse): NextResponse {
   response.headers.set('X-Robots-Tag', 'all');
   response.headers.delete('x-nextjs-matched-path');
   return response;
+}
+
+function isExcluded(path: string, patterns: string[]): boolean {
+  return patterns.some((pattern) => matchGlob(pattern, path));
+}
+
+function matchGlob(pattern: string, path: string): boolean {
+  const regex = pattern
+    .replace(/\*\*/g, '{{DOUBLESTAR}}')
+    .replace(/\*/g, '[^/]*')
+    .replace(/{{DOUBLESTAR}}/g, '.*');
+  return new RegExp(`^${regex}$`).test(path);
 }
