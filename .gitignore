@@ -1,0 +1,25 @@
+node_modules
+dist
+.turbo
+*.tsbuildinfo
+.DS_Store
+coverage
+
+# Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Environment
+.env
+.env.*
+
+# Claude Code
+.claude
+
+# Next.js (examples)
+.next
+out
+/plan
+/research
