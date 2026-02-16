@@ -1,0 +1,16 @@
+{
+  "name": "hono-cloudflare-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@agent-seo/hono": "workspace:*",
+    "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
