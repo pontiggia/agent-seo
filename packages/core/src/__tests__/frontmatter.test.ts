@@ -3,14 +3,21 @@ import { buildFrontmatter } from '../frontmatter.js';
 
 describe('buildFrontmatter', () => {
   it('includes title and description', () => {
-    const fm = buildFrontmatter({ title: 'Test Page', description: 'A test page' });
+    const fm = buildFrontmatter({
+      title: 'Test Page',
+      description: 'A test page',
+    });
     expect(fm).toContain('---');
     expect(fm).toContain('title: "Test Page"');
     expect(fm).toContain('description: "A test page"');
   });
 
   it('includes url when provided', () => {
-    const fm = buildFrontmatter({ title: 'T', description: 'D', url: 'https://example.com' });
+    const fm = buildFrontmatter({
+      title: 'T',
+      description: 'D',
+      url: 'https://example.com',
+    });
     expect(fm).toContain('url: "https://example.com"');
   });
 
@@ -20,7 +27,11 @@ describe('buildFrontmatter', () => {
   });
 
   it('includes lastModified when provided', () => {
-    const fm = buildFrontmatter({ title: 'T', description: 'D', lastModified: '2024-01-01' });
+    const fm = buildFrontmatter({
+      title: 'T',
+      description: 'D',
+      lastModified: '2024-01-01',
+    });
     expect(fm).toContain('lastModified: "2024-01-01"');
   });
 

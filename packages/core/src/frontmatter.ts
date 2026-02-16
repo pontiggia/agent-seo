@@ -14,7 +14,8 @@ export function buildFrontmatter(input: FrontmatterInput): string {
   const lines: string[] = ['---'];
 
   if (input.title) lines.push(`title: "${escapeYaml(input.title)}"`);
-  if (input.description) lines.push(`description: "${escapeYaml(input.description)}"`);
+  if (input.description)
+    lines.push(`description: "${escapeYaml(input.description)}"`);
   if (input.url) lines.push(`url: "${input.url}"`);
   if (input.lang) lines.push(`lang: "${input.lang}"`);
   if (input.lastModified) lines.push(`lastModified: "${input.lastModified}"`);
@@ -25,7 +26,9 @@ export function buildFrontmatter(input: FrontmatterInput): string {
 
     const primaryType = primary?.['@type'];
     if (primaryType) {
-      lines.push(`schema: "${Array.isArray(primaryType) ? primaryType[0] : primaryType}"`);
+      lines.push(
+        `schema: "${Array.isArray(primaryType) ? primaryType[0] : primaryType}"`,
+      );
     }
 
     // Author

@@ -38,6 +38,9 @@ importers:
 
   examples/devtoolbox:
     dependencies:
+      '@agent-seo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@agent-seo/next':
         specifier: workspace:*
         version: link:../../packages/next
