@@ -10,6 +10,7 @@ export function buildMarkdownHeaders(
 ): AgentSeoHeaders {
   const headers: AgentSeoHeaders = {
     'Content-Type': 'text/markdown; charset=utf-8',
+    'Content-Disposition': 'inline',
     'Vary': 'Accept, User-Agent',
     'X-Markdown-Tokens': String(result.tokenEstimate),
   };

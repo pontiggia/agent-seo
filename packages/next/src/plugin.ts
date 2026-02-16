@@ -119,6 +119,7 @@ export async function GET(request) {
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
+      'Content-Disposition': 'inline',
       'Cache-Control': 'public, max-age=3600, s-maxage=3600',
     },
   });
@@ -199,8 +200,10 @@ export async function GET(request) {
       status: 200,
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
+        'Content-Disposition': 'inline',
         'Cache-Control': 'public, max-age=3600, s-maxage=3600',
         'Vary': 'Accept, User-Agent',
+        'X-Robots-Tag': 'all',
         'X-Agent-Seo': 'transformed',
       },
     });

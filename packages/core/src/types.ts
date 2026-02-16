@@ -119,6 +119,7 @@ export interface LlmsTxtResult {
 
 export interface AgentSeoHeaders {
   'Content-Type': string;
+  'Content-Disposition'?: string;
   Vary: string;
   'X-Markdown-Tokens': string;
   'X-Robots-Tag'?: string;

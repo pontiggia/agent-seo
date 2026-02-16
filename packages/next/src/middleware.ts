@@ -34,14 +34,14 @@ export function createAgentSeoMiddleware() {
       const originalPath = pathname.slice(0, -3) || '/';
       const transformUrl = new URL('/api/agent-seo-transform', request.url);
       transformUrl.searchParams.set('path', originalPath);
-      return NextResponse.rewrite(transformUrl);
+      return setBotHeaders(NextResponse.rewrite(transformUrl));
     }
 
     // If AI bot, rewrite to transform API
     if (aiCtx.isAIBot) {
       const transformUrl = new URL('/api/agent-seo-transform', request.url);
       transformUrl.searchParams.set('path', pathname);
-      return NextResponse.rewrite(transformUrl);
+      return setBotHeaders(NextResponse.rewrite(transformUrl));
     }
 
     // Normal request — just add Vary header
@@ -49,4 +49,16 @@ export function createAgentSeoMiddleware() {
     response.headers.set('Vary', 'Accept, User-Agent');
     return response;
   };
+}
+
+/**
+ * Set clean, bot-friendly headers on a rewrite response.
+ * Overrides Next.js RSC-related headers that can confuse AI bots.
+ */
+function setBotHeaders(response: NextResponse): NextResponse {
+  response.headers.set('Content-Disposition', 'inline');
+  response.headers.set('Vary', 'Accept, User-Agent');
+  response.headers.set('X-Robots-Tag', 'all');
+  response.headers.delete('x-nextjs-matched-path');
+  return response;
 }
