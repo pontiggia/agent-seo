@@ -10,9 +10,13 @@ import {
 import type { AgentSeoOptions } from '@agent-seo/core';
 
 export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
-  const cache = options.cache?.enabled !== false
-    ? createCache({ maxEntries: options.cache?.maxEntries, ttl: options.cache?.ttl })
-    : null;
+  const cache =
+    options.cache?.enabled !== false
+      ? createCache({
+          maxEntries: options.cache?.maxEntries,
+          ttl: options.cache?.ttl,
+        })
+      : null;
 
   return async (c: Context, next: Next) => {
     const path = new URL(c.req.url).pathname;
@@ -20,14 +24,24 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
     // Route: /llms.txt or /llms-full.txt
     if (path === '/llms.txt' || path === '/llms-full.txt') {
       const routes = options.llmsTxt?.routes || [];
+
       const result = generateLlmsTxt(
-        { siteName: options.siteName, siteDescription: options.siteDescription, baseUrl: options.baseUrl, ...options.llmsTxt },
-        routes
+        {
+          siteName: options.siteName,
+          siteDescription: options.siteDescription,
+          baseUrl: options.baseUrl,
+          ...options.llmsTxt,
+        },
+        routes,
       );
-      return c.text(path === '/llms-full.txt' ? result.llmsFullTxt : result.llmsTxt, 200, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600',
-      });
+      return c.text(
+        path === '/llms-full.txt' ? result.llmsFullTxt : result.llmsTxt,
+        200,
+        {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      );
     }
 
     // Detect AI bot
@@ -46,7 +60,11 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
       if (cache?.has(path)) {
         const cached = cache.get(path)!;
         const headers = buildMarkdownHeaders(cached, options, path);
-        return c.text(cached.markdown, 200, headers as unknown as Record<string, string>);
+        return c.text(
+          cached.markdown,
+          200,
+          headers as unknown as Record<string, string>,
+        );
       }
 
       // Let the route handler run, then intercept

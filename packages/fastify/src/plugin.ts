@@ -12,30 +12,52 @@ import type { AgentSeoOptions } from '@agent-seo/core';
 
 async function agentSeoPlugin(
   fastify: FastifyInstance,
-  options: AgentSeoOptions & FastifyPluginOptions
+  options: AgentSeoOptions & FastifyPluginOptions,
 ): Promise<void> {
-  const cache = options.cache?.enabled !== false
-    ? createCache({ maxEntries: options.cache?.maxEntries, ttl: options.cache?.ttl })
-    : null;
+  const cache =
+    options.cache?.enabled !== false
+      ? createCache({
+          maxEntries: options.cache?.maxEntries,
+          ttl: options.cache?.ttl,
+        })
+      : null;
 
   // Register /llms.txt route
   fastify.get('/llms.txt', async (_request, reply) => {
     const routes = options.llmsTxt?.routes || [];
+
     const result = generateLlmsTxt(
-      { siteName: options.siteName, siteDescription: options.siteDescription, baseUrl: options.baseUrl, ...options.llmsTxt },
-      routes
+      {
+        siteName: options.siteName,
+        siteDescription: options.siteDescription,
+        baseUrl: options.baseUrl,
+        ...options.llmsTxt,
+      },
+      routes,
     );
-    return reply.type('text/plain; charset=utf-8').header('Cache-Control', 'public, max-age=3600').send(result.llmsTxt);
+    return reply
+      .type('text/plain; charset=utf-8')
+      .header('Cache-Control', 'public, max-age=3600')
+      .send(result.llmsTxt);
   });
 
   // Register /llms-full.txt route
   fastify.get('/llms-full.txt', async (_request, reply) => {
     const routes = options.llmsTxt?.routes || [];
+
     const result = generateLlmsTxt(
-      { siteName: options.siteName, siteDescription: options.siteDescription, baseUrl: options.baseUrl, ...options.llmsTxt },
-      routes
+      {
+        siteName: options.siteName,
+        siteDescription: options.siteDescription,
+        baseUrl: options.baseUrl,
+        ...options.llmsTxt,
+      },
+      routes,
     );
-    return reply.type('text/plain; charset=utf-8').header('Cache-Control', 'public, max-age=3600').send(result.llmsFullTxt);
+    return reply
+      .type('text/plain; charset=utf-8')
+      .header('Cache-Control', 'public, max-age=3600')
+      .send(result.llmsFullTxt);
   });
 
   // Add Vary header to all responses and transform for AI bots

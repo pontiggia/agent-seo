@@ -7,7 +7,11 @@ import {
   buildAlternateLinkHeader,
   createCache,
 } from '@agent-seo/core';
-import type { AgentSeoOptions, TransformResult, AIRequestContext } from '@agent-seo/core';
+import type {
+  AgentSeoOptions,
+  TransformResult,
+  AIRequestContext,
+} from '@agent-seo/core';
 
 // Extend Express Request
 declare global {
@@ -19,21 +23,26 @@ declare global {
 }
 
 export function agentSeo(options: AgentSeoOptions) {
-  const cache = options.cache?.enabled !== false
-    ? createCache({
-        maxEntries: options.cache?.maxEntries,
-        ttl: options.cache?.ttl,
-      })
-    : null;
+  const cache =
+    options.cache?.enabled !== false
+      ? createCache({
+          maxEntries: options.cache?.maxEntries,
+          ttl: options.cache?.ttl,
+        })
+      : null;
 
   const excludePatterns = options.exclude || [
-    '/api/**', '/_next/**', '/static/**', '/assets/**', '/favicon.ico',
+    '/api/**',
+    '/_next/**',
+    '/static/**',
+    '/assets/**',
+    '/favicon.ico',
   ];
 
   return async function agentSeoMiddleware(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     const path = req.path;
 
@@ -102,7 +111,7 @@ function interceptAndTransform(
   res: Response,
   next: NextFunction,
   options: AgentSeoOptions,
-  cache: ReturnType<typeof createCache> | null
+  cache: ReturnType<typeof createCache> | null,
 ): void {
   const path = req.path;
 
@@ -181,9 +190,10 @@ function sendMarkdownResponse(
 function serveLlmsTxt(
   res: Response,
   options: AgentSeoOptions,
-  full: boolean
+  full: boolean,
 ): void {
   const routes = options.llmsTxt?.routes || [];
+
   const result = generateLlmsTxt(
     {
       siteName: options.siteName,
@@ -191,7 +201,7 @@ function serveLlmsTxt(
       baseUrl: options.baseUrl,
       ...options.llmsTxt,
     },
-    routes
+    routes,
   );
 
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
@@ -205,7 +215,7 @@ function isExcluded(path: string, patterns: string[]): boolean {
 
 function isIncluded(
   path: string,
-  include?: string[] | ((path: string) => boolean)
+  include?: string[] | ((path: string) => boolean),
 ): boolean {
   if (!include) return true;
   if (typeof include === 'function') return include(path);
