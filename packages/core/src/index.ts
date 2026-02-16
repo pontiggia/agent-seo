@@ -34,6 +34,14 @@ export { extractJsonLdBlocks } from './json-ld.js';
 // llms.txt Generation
 export { generateLlmsTxt } from './llms-txt.js';
 
+// Route Discovery
+export {
+  discoverNextRoutes,
+  discoverFilesystemRoutes,
+  extractMetadataFromSource,
+} from './discover.js';
+export type { DiscoverOptions } from './discover.js';
+
 // Response Headers
 export { buildMarkdownHeaders, buildAlternateLinkHeader } from './headers.js';
 
