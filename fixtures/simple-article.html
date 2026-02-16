@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding TypeScript Generics - Dev Blog</title>
+  <meta name="description" content="A comprehensive guide to TypeScript generics with practical examples and best practices.">
+  <link rel="canonical" href="https://devblog.com/typescript-generics">
+  <link rel="stylesheet" href="/styles/main.css">
+  <script src="/scripts/analytics.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="cookie-banner">
+    <p>We use cookies. <a href="/privacy">Learn more</a></p>
+    <button>Accept</button>
+  </div>
+
+  <main>
+    <article>
+      <h1>Understanding TypeScript Generics</h1>
+      <p class="meta">Published on January 15, 2024 by John Doe</p>
+
+      <p>TypeScript generics are a powerful feature that allows you to create reusable components that work with multiple types. They provide type safety without sacrificing flexibility.</p>
+
+      <h2>What Are Generics?</h2>
+      <p>Generics enable you to write functions and classes that can work with any type while still maintaining full type information. Think of them as type variables that act as placeholders for actual types.</p>
+
+      <h2>Basic Syntax</h2>
+      <p>Here's a simple example of a generic function:</p>
+      <pre><code class="language-typescript">function identity&lt;T&gt;(arg: T): T {
+  return arg;
+}
+
+const result = identity&lt;string&gt;("hello");
+const num = identity(42); // type inferred</code></pre>
+
+      <h2>Generic Constraints</h2>
+      <p>Sometimes you need to constrain generics to types that have certain properties:</p>
+      <pre><code class="language-typescript">interface HasLength {
+  length: number;
+}
+
+function logLength&lt;T extends HasLength&gt;(arg: T): void {
+  console.log(arg.length);
+}</code></pre>
+
+      <h2>Conclusion</h2>
+      <p>Generics are essential for writing type-safe, reusable TypeScript code. Start with simple use cases and gradually adopt more complex patterns as needed.</p>
+    </article>
+
+    <aside class="sidebar">
+      <div class="related-posts">
+        <h3>Related Posts</h3>
+        <ul>
+          <li><a href="/typescript-basics">TypeScript Basics</a></li>
+          <li><a href="/advanced-types">Advanced Types</a></li>
+        </ul>
+      </div>
+      <div class="newsletter">
+        <h3>Subscribe</h3>
+        <form>
+          <input type="email" placeholder="your@email.com">
+          <button>Subscribe</button>
+        </form>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Dev Blog. All rights reserved.</p>
+    <nav>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </nav>
+  </footer>
+</body>
+</html>

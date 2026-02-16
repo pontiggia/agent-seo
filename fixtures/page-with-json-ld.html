@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How to Deploy a Node.js App to AWS - TechBlog</title>
+  <meta name="description" content="Step-by-step guide to deploying a Node.js application on AWS using EC2, Docker, and GitHub Actions.">
+  <link rel="canonical" href="https://techblog.example.com/deploy-nodejs-aws">
+  <meta property="article:modified_time" content="2024-02-20T14:30:00Z">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Deploy a Node.js App to AWS",
+    "author": {"@type": "Person", "name": "Jane Smith"},
+    "datePublished": "2024-01-15",
+    "dateModified": "2024-02-20",
+    "publisher": {"@type": "Organization", "name": "TechBlog"}
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "TechBlog",
+    "url": "https://techblog.example.com",
+    "logo": "https://techblog.example.com/logo.png"
+  }
+  </script>
+</head>
+<body>
+  <nav>
+    <a href="/">TechBlog</a>
+    <a href="/tutorials">Tutorials</a>
+    <a href="/news">News</a>
+  </nav>
+
+  <article>
+    <h1>How to Deploy a Node.js App to AWS</h1>
+    <p>Deploying a Node.js application to AWS is a common task for web developers. In this guide, we'll walk through the complete process using EC2, Docker, and GitHub Actions for continuous deployment.</p>
+
+    <h2>Prerequisites</h2>
+    <ul>
+      <li>An AWS account</li>
+      <li>Node.js 18+ installed locally</li>
+      <li>Docker installed locally</li>
+      <li>A GitHub repository with your app</li>
+    </ul>
+
+    <h2>Step 1: Create a Dockerfile</h2>
+    <pre><code class="language-dockerfile">FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]</code></pre>
+
+    <h2>Step 2: Set Up EC2 Instance</h2>
+    <p>Launch an EC2 instance with the following specifications:</p>
+    <table>
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Instance Type</td><td>t3.small</td></tr>
+        <tr><td>AMI</td><td>Amazon Linux 2023</td></tr>
+        <tr><td>Storage</td><td>20 GB gp3</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Step 3: Configure GitHub Actions</h2>
+    <p>Create a workflow file for automated deployments:</p>
+    <pre><code class="language-yaml">name: Deploy
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t myapp .
+      - run: docker push myapp</code></pre>
+
+    <h2>Conclusion</h2>
+    <p>With this setup, every push to the main branch will automatically build and deploy your application to AWS.</p>
+  </article>
+
+  <footer>
+    <p>&copy; 2024 TechBlog</p>
+  </footer>
+</body>
+</html>

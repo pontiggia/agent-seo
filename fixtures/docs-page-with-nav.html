@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Getting Started - MyLib Documentation</title>
+  <meta name="description" content="Learn how to install and configure MyLib for your project.">
+  <link rel="canonical" href="https://docs.mylib.dev/getting-started">
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <a href="/">MyLib</a>
+      <span>v2.1.0</span>
+      <a href="https://github.com/mylib/mylib">GitHub</a>
+    </div>
+  </header>
+
+  <div class="docs-layout">
+    <nav class="sidebar">
+      <h3>Documentation</h3>
+      <ul>
+        <li><a href="/getting-started">Getting Started</a></li>
+        <li><a href="/installation">Installation</a></li>
+        <li><a href="/configuration">Configuration</a></li>
+        <li><a href="/api-reference">API Reference</a></li>
+        <li><a href="/examples">Examples</a></li>
+        <li><a href="/faq">FAQ</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <article>
+        <h1>Getting Started</h1>
+        <p>MyLib is a lightweight utility library for building web applications. It provides a set of composable functions that simplify common tasks.</p>
+
+        <h2>Installation</h2>
+        <p>Install MyLib using your preferred package manager:</p>
+        <pre><code class="language-bash">npm install mylib
+# or
+yarn add mylib
+# or
+pnpm add mylib</code></pre>
+
+        <h2>Quick Start</h2>
+        <p>Import the functions you need and start using them:</p>
+        <pre><code class="language-typescript">import { createApp, defineConfig } from 'mylib';
+
+const config = defineConfig({
+  debug: true,
+  plugins: ['auth', 'logger'],
+});
+
+const app = createApp(config);
+app.start();</code></pre>
+
+        <h2>Configuration Options</h2>
+        <p>MyLib accepts the following configuration options:</p>
+        <table>
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>debug</td><td>boolean</td><td>false</td><td>Enable debug logging</td></tr>
+            <tr><td>plugins</td><td>string[]</td><td>[]</td><td>Plugins to load</td></tr>
+            <tr><td>port</td><td>number</td><td>3000</td><td>Server port</td></tr>
+            <tr><td>host</td><td>string</td><td>localhost</td><td>Server host</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Next Steps</h2>
+        <ul>
+          <li>Read the <a href="/api-reference">API Reference</a> for detailed function documentation</li>
+          <li>Check out <a href="/examples">Examples</a> for common use cases</li>
+          <li>Visit the <a href="/faq">FAQ</a> for troubleshooting</li>
+        </ul>
+      </article>
+
+      <nav class="pagination">
+        <span>Previous: <a href="/introduction">Introduction</a></span>
+        <span>Next: <a href="/installation">Installation</a></span>
+      </nav>
+    </main>
+  </div>
+
+  <footer>
+    <p>MyLib Documentation. Released under the MIT License.</p>
+  </footer>
+</body>
+</html>
