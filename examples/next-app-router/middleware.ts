@@ -1,4 +1,4 @@
-import { createAgentSeoMiddleware } from '@agent-seo/next';
+import { createAgentSeoMiddleware } from '@agent-seo/next/middleware';
 
 export const middleware = createAgentSeoMiddleware();
 
