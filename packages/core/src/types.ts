@@ -92,7 +92,11 @@ export interface LlmsTxtOptions {
   siteDescription: string;
   /** The base URL of the site (e.g., "https://example.com") */
   baseUrl: string;
-  /** Routes to include. If omitted, auto-discovered. */
+  /**
+   * Routes to include in llms.txt.
+   * - `LlmsTxtRoute[]`: explicit list of routes
+   * - Omit to require routes to be passed to `generateLlmsTxt()` directly
+   */
   routes?: LlmsTxtRoute[];
   /** Sections to always exclude from llms.txt (e.g., ["/admin", "/internal"]) */
   excludePatterns?: string[];
@@ -115,11 +119,11 @@ export interface LlmsTxtResult {
 
 export interface AgentSeoHeaders {
   'Content-Type': string;
-  'Vary': string;
+  Vary: string;
   'X-Markdown-Tokens': string;
   'X-Robots-Tag'?: string;
   'Content-Signal'?: string;
-  'Link'?: string;
+  Link?: string;
 }
 
 // ============================================================
@@ -150,7 +154,11 @@ export interface AgentSeoOptions {
   /** Transform pipeline options */
   transform?: Omit<TransformOptions, 'url'>;
 
-  /** llms.txt generation options (merged with siteName/siteDescription) */
+  /**
+   * llms.txt generation options.
+   * Routes can be provided explicitly via `llmsTxt.routes`.
+   * For Next.js, use `appDir` on `createLlmsTxtHandler` for automatic route discovery.
+   */
   llmsTxt?: Partial<LlmsTxtOptions>;
 
   /** Cache options */
