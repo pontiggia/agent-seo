@@ -1,0 +1,21 @@
+{
+  "name": "@agent-seo/cli",
+  "version": "1.0.0",
+  "description": "CLI audit tool for AI visibility scoring",
+  "type": "module",
+  "bin": {
+    "agent-seo": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agent-seo/core": "workspace:*",
+    "commander": "^13.0.0",
+    "chalk": "^5.4.0",
+    "ora": "^8.2.0"
+  }
+}
