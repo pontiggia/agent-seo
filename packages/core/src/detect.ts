@@ -11,101 +11,217 @@ const AI_BOT_REGISTRY: BotEntry[] = [
   // === OpenAI ===
   {
     pattern: /GPTBot/i,
-    info: { name: 'GPTBot', operator: 'OpenAI', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'GPTBot',
+      operator: 'OpenAI',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
   {
     pattern: /OAI-SearchBot/i,
-    info: { name: 'OAI-SearchBot', operator: 'OpenAI', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'OAI-SearchBot',
+      operator: 'OpenAI',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
   {
     pattern: /ChatGPT-User/i,
-    info: { name: 'ChatGPT-User', operator: 'OpenAI', purpose: 'agent-browsing', rendersJs: true },
+    info: {
+      name: 'ChatGPT-User',
+      operator: 'OpenAI',
+      purpose: 'agent-browsing',
+      rendersJs: true,
+    },
   },
 
   // === Anthropic ===
   {
     pattern: /ClaudeBot/i,
-    info: { name: 'ClaudeBot', operator: 'Anthropic', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'ClaudeBot',
+      operator: 'Anthropic',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
   {
     pattern: /Claude-User/i,
-    info: { name: 'Claude-User', operator: 'Anthropic', purpose: 'agent-browsing', rendersJs: true },
+    info: {
+      name: 'Claude-User',
+      operator: 'Anthropic',
+      purpose: 'agent-browsing',
+      rendersJs: true,
+    },
   },
   {
     pattern: /Claude-SearchBot/i,
-    info: { name: 'Claude-SearchBot', operator: 'Anthropic', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'Claude-SearchBot',
+      operator: 'Anthropic',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
   {
     pattern: /anthropic-ai/i,
-    info: { name: 'anthropic-ai', operator: 'Anthropic', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'anthropic-ai',
+      operator: 'Anthropic',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
 
   // === Perplexity ===
   {
     pattern: /PerplexityBot/i,
-    info: { name: 'PerplexityBot', operator: 'Perplexity', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'PerplexityBot',
+      operator: 'Perplexity',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
   {
     pattern: /Perplexity-User/i,
-    info: { name: 'Perplexity-User', operator: 'Perplexity', purpose: 'agent-browsing', rendersJs: true },
+    info: {
+      name: 'Perplexity-User',
+      operator: 'Perplexity',
+      purpose: 'agent-browsing',
+      rendersJs: true,
+    },
   },
 
   // === Google ===
   {
     pattern: /Google-Extended/i,
-    info: { name: 'Google-Extended', operator: 'Google', purpose: 'training', rendersJs: true },
+    info: {
+      name: 'Google-Extended',
+      operator: 'Google',
+      purpose: 'training',
+      rendersJs: true,
+    },
+  },
+  {
+    pattern: /Googlebot/i,
+    info: {
+      name: 'Googlebot',
+      operator: 'Google',
+      purpose: 'search',
+      rendersJs: true,
+    },
+  },
+  {
+    // CATCHES GEMINI BROWSING TOOL (and other direct fetchers)
+    // The ^ and $ anchors ensure we match ONLY "Google" exactly.
+    // This prevents false positives like "Google Chrome" or "Google App".
+    pattern: /^Google$/i,
+    info: {
+      name: 'Google-ReadAloud-Or-Gemini',
+      operator: 'Google',
+      purpose: 'agent-browsing',
+      rendersJs: true,
+    },
   },
 
   // === Apple ===
   {
     pattern: /Applebot-Extended/i,
-    info: { name: 'Applebot-Extended', operator: 'Apple', purpose: 'training', rendersJs: true },
+    info: {
+      name: 'Applebot-Extended',
+      operator: 'Apple',
+      purpose: 'training',
+      rendersJs: true,
+    },
   },
 
   // === Meta ===
   {
     pattern: /meta-externalagent/i,
-    info: { name: 'Meta-ExternalAgent', operator: 'Meta', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'Meta-ExternalAgent',
+      operator: 'Meta',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
   {
     pattern: /FacebookBot/i,
-    info: { name: 'FacebookBot', operator: 'Meta', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'FacebookBot',
+      operator: 'Meta',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
 
   // === Common Crawl ===
   {
     pattern: /CCBot/i,
-    info: { name: 'CCBot', operator: 'Common Crawl', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'CCBot',
+      operator: 'Common Crawl',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
 
   // === Cohere ===
   {
     pattern: /cohere-ai/i,
-    info: { name: 'cohere-ai', operator: 'Cohere', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'cohere-ai',
+      operator: 'Cohere',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
 
   // === Amazon ===
   {
     pattern: /Amazonbot/i,
-    info: { name: 'Amazonbot', operator: 'Amazon', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'Amazonbot',
+      operator: 'Amazon',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
 
   // === Bytedance ===
   {
     pattern: /Bytespider/i,
-    info: { name: 'Bytespider', operator: 'ByteDance', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'Bytespider',
+      operator: 'ByteDance',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
 
   // === You.com ===
   {
     pattern: /YouBot/i,
-    info: { name: 'YouBot', operator: 'You.com', purpose: 'search', rendersJs: false },
+    info: {
+      name: 'YouBot',
+      operator: 'You.com',
+      purpose: 'search',
+      rendersJs: false,
+    },
   },
 
   // === DeepSeek ===
   {
     pattern: /Deepseek/i,
-    info: { name: 'DeepSeekBot', operator: 'DeepSeek', purpose: 'training', rendersJs: false },
+    info: {
+      name: 'DeepSeekBot',
+      operator: 'DeepSeek',
+      purpose: 'training',
+      rendersJs: false,
+    },
   },
 ];
 
@@ -118,7 +234,7 @@ const AI_BOT_REGISTRY: BotEntry[] = [
  */
 export function detectAgent(
   userAgent: string | null | undefined,
-  acceptHeader?: string | null
+  acceptHeader?: string | null,
 ): AIRequestContext {
   const wantsMarkdown = acceptHeader
     ? /text\/markdown/i.test(acceptHeader)
@@ -145,7 +261,7 @@ export function detectAgent(
  */
 export function shouldServeMarkdown(
   userAgent: string | null | undefined,
-  acceptHeader?: string | null
+  acceptHeader?: string | null,
 ): boolean {
   const ctx = detectAgent(userAgent, acceptHeader);
   return ctx.isAIBot || ctx.wantsMarkdown;
