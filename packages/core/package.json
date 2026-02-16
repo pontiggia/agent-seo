@@ -1,0 +1,42 @@
+{
+  "name": "@agent-seo/core",
+  "version": "1.0.0",
+  "description": "Core HTML-to-Markdown transformation engine for AI-readable websites",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "isbot": "^5.1.0",
+    "jsdom": "^26.0.0",
+    "lru-cache": "^11.0.0",
+    "turndown": "^7.2.0",
+    "turndown-plugin-gfm": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^27.0.0",
+    "@types/turndown": "^5.0.5",
+    "cheerio": "^1.0.0"
+  }
+}

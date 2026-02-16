@@ -1,0 +1,149 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`fixture: blog-with-sidebar.html > strips sidebar, newsletter, and social share 1`] = `
+"Code review is a critical practice in software development. It is the process of examining code changes made by a developer before they are merged into the main codebase.
+
+## 1\\. Keep Reviews Small
+
+Smaller pull requests are easier to review and lead to more thorough feedback. Aim for PRs under 400 lines of changed code.
+
+## 2\\. Review Code, Not People
+
+Focus your feedback on the code, not the author. Use objective language and suggest improvements constructively.
+
+## 3\\. Use Checklists
+
+Create a standard checklist for reviews:
+
+-   Does the code follow our style guide?
+-   Are there adequate tests?
+-   Is error handling appropriate?
+-   Are there security concerns?
+
+## 4\\. Automate What You Can
+
+Use linters, formatters, and CI checks to catch style and syntax issues automatically.
+
+## 5\\. Provide Context
+
+As a reviewer, explain *why* you suggest changes, not just what to change."
+`;
+
+exports[`fixture: docs-page-with-nav.html > strips sidebar nav but preserves code blocks and tables 1`] = `
+"MyLib is a lightweight utility library for building web applications. It provides a set of composable functions that simplify common tasks.
+
+## Installation
+
+Install MyLib using your preferred package manager:
+
+\`\`\`
+npm install mylib
+# or
+yarn add mylib
+# or
+pnpm add mylib
+\`\`\`
+
+## Quick Start
+
+Import the functions you need and start using them:
+
+\`\`\`
+import { createApp, defineConfig } from 'mylib';
+
+const config = defineConfig({
+  debug: true,
+  plugins: ['auth', 'logger'],
+});
+
+const app = createApp(config);
+app.start();
+\`\`\`
+
+## Configuration Options
+
+MyLib accepts the following configuration options:
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| debug | boolean | false | Enable debug logging |
+| plugins | string\\[\\] | \\[\\] | Plugins to load |
+| port | number | 3000 | Server port |
+| host | string | localhost | Server host |
+
+## Next Steps
+
+-   Read the [API Reference](https://docs.mylib.dev/api-reference) for detailed function documentation
+-   Check out [Examples](https://docs.mylib.dev/examples) for common use cases
+-   Visit the [FAQ](https://docs.mylib.dev/faq) for troubleshooting"
+`;
+
+exports[`fixture: product-page-shopify.html > extracts product JSON-LD and content 1`] = `
+"$299.99
+
+4.7/5 (1,234 reviews)
+
+## Description
+
+The Premium Wireless Headphones deliver an exceptional audio experience with industry-leading active noise cancellation. Whether you're commuting, working, or relaxing, these headphones provide crystal-clear sound and all-day comfort.
+
+## Key Features
+
+| Feature | Specification |
+| --- | --- |
+| Battery Life | 30 hours |
+| Noise Cancellation | Active (ANC) |
+| Bluetooth | 5.3 |
+| Weight | 250g |
+| Driver Size | 40mm |
+| Frequency Response | 20Hz - 40kHz |
+
+## What's in the Box
+
+-   Premium Wireless Headphones
+-   USB-C Charging Cable
+-   3.5mm Audio Cable
+-   Carrying Case
+-   User Manual"
+`;
+
+exports[`fixture: simple-article.html > transforms to clean markdown 1`] = `
+"Published on January 15, 2024 by John Doe
+
+TypeScript generics are a powerful feature that allows you to create reusable components that work with multiple types. They provide type safety without sacrificing flexibility.
+
+## What Are Generics?
+
+Generics enable you to write functions and classes that can work with any type while still maintaining full type information. Think of them as type variables that act as placeholders for actual types.
+
+## Basic Syntax
+
+Here's a simple example of a generic function:
+
+\`\`\`
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+const result = identity<string>("hello");
+const num = identity(42); // type inferred
+\`\`\`
+
+## Generic Constraints
+
+Sometimes you need to constrain generics to types that have certain properties:
+
+\`\`\`
+interface HasLength {
+  length: number;
+}
+
+function logLength<T extends HasLength>(arg: T): void {
+  console.log(arg.length);
+}
+\`\`\`
+
+## Conclusion
+
+Generics are essential for writing type-safe, reusable TypeScript code. Start with simple use cases and gradually adopt more complex patterns as needed."
+`;
