@@ -38,6 +38,36 @@ describe('buildFrontmatter', () => {
     expect(fm).toContain('schema: "Article"');
   });
 
+  it('extracts author, datePublished, dateModified from JSON-LD', () => {
+    const fm = buildFrontmatter({
+      title: 'T',
+      description: 'D',
+      jsonLd: [
+        {
+          '@type': 'Article',
+          author: { '@type': 'Organization', name: 'DevToolbox' },
+          datePublished: '2026-01-20',
+          dateModified: '2026-02-12',
+        },
+      ],
+    });
+    expect(fm).toContain('author: "DevToolbox"');
+    expect(fm).toContain('datePublished: "2026-01-20"');
+    expect(fm).toContain('dateModified: "2026-02-12"');
+  });
+
+  it('handles JSON-LD without author or dates', () => {
+    const fm = buildFrontmatter({
+      title: 'T',
+      description: 'D',
+      jsonLd: [{ '@type': 'WebPage' }],
+    });
+    expect(fm).toContain('schema: "WebPage"');
+    expect(fm).not.toContain('author:');
+    expect(fm).not.toContain('datePublished:');
+    expect(fm).not.toContain('dateModified:');
+  });
+
   it('starts and ends with ---', () => {
     const fm = buildFrontmatter({ title: 'T', description: 'D' });
     expect(fm.startsWith('---')).toBe(true);

@@ -19,12 +19,28 @@ export function buildFrontmatter(input: FrontmatterInput): string {
   if (input.lang) lines.push(`lang: "${input.lang}"`);
   if (input.lastModified) lines.push(`lastModified: "${input.lastModified}"`);
 
-  // Extract key schema.org type if present
+  // Extract structured data from JSON-LD
   if (input.jsonLd?.length) {
-    const primaryType = input.jsonLd[0]?.['@type'];
+    const primary = input.jsonLd[0];
+
+    const primaryType = primary?.['@type'];
     if (primaryType) {
       lines.push(`schema: "${Array.isArray(primaryType) ? primaryType[0] : primaryType}"`);
     }
+
+    // Author
+    const author = primary?.author as Record<string, unknown> | undefined;
+    if (author) {
+      const authorName = author.name as string | undefined;
+      if (authorName) lines.push(`author: "${escapeYaml(authorName)}"`);
+    }
+
+    // Dates
+    const datePublished = primary?.datePublished as string | undefined;
+    if (datePublished) lines.push(`datePublished: "${datePublished}"`);
+
+    const dateModified = primary?.dateModified as string | undefined;
+    if (dateModified) lines.push(`dateModified: "${dateModified}"`);
   }
 
   lines.push('---');
