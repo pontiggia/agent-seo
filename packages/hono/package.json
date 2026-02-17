@@ -2,6 +2,15 @@
   "name": "@agent-seo/hono",
   "version": "1.0.0",
   "description": "Hono middleware for AI-readable websites",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pontiggia/agent-seo",
+    "directory": "packages/hono"
+  },
+  "homepage": "https://github.com/pontiggia/agent-seo#readme",
+  "bugs": "https://github.com/pontiggia/agent-seo/issues",
+  "keywords": ["seo", "ai", "llm", "hono", "middleware", "llms-txt", "agent", "bot"],
   "type": "module",
   "engines": {
     "node": ">=20.0.0"

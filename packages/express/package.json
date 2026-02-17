@@ -2,6 +2,15 @@
   "name": "@agent-seo/express",
   "version": "1.0.0",
   "description": "Express middleware for AI-readable websites",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pontiggia/agent-seo",
+    "directory": "packages/express"
+  },
+  "homepage": "https://github.com/pontiggia/agent-seo#readme",
+  "bugs": "https://github.com/pontiggia/agent-seo/issues",
+  "keywords": ["seo", "ai", "llm", "express", "middleware", "llms-txt", "agent", "bot"],
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
