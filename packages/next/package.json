@@ -1,6 +1,6 @@
 {
   "name": "@agent-seo/next",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Next.js plugin for AI-readable websites",
   "license": "MIT",
   "repository": {
@@ -10,7 +10,17 @@
   },
   "homepage": "https://github.com/pontiggia/agent-seo#readme",
   "bugs": "https://github.com/pontiggia/agent-seo/issues",
-  "keywords": ["seo", "ai", "llm", "nextjs", "next", "middleware", "llms-txt", "agent", "bot"],
+  "keywords": [
+    "seo",
+    "ai",
+    "llm",
+    "nextjs",
+    "next",
+    "middleware",
+    "llms-txt",
+    "agent",
+    "bot"
+  ],
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
