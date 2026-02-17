@@ -46,8 +46,17 @@ export function withAgentSeo(agentSeoOptions: WithAgentSeoOptions) {
   }
 
   return (nextConfig: NextConfig = {}): NextConfig => {
+    const existingExternal = nextConfig.serverExternalPackages ?? [];
+
     return {
       ...nextConfig,
+
+      // Prevent bundling jsdom (and its CJS deps) into serverless functions.
+      // jsdom must be loaded at runtime to avoid CJS/ESM incompatibilities.
+      serverExternalPackages: [
+        ...existingExternal,
+        ...['jsdom'].filter((pkg) => !existingExternal.includes(pkg)),
+      ],
 
       async headers() {
         const existingHeaders = await (nextConfig.headers?.() ?? []);
