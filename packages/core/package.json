@@ -1,6 +1,6 @@
 {
   "name": "@agent-seo/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core HTML-to-Markdown transformation engine for AI-readable websites",
   "license": "MIT",
   "repository": {

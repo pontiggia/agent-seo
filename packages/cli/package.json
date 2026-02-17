@@ -1,6 +1,6 @@
 {
   "name": "@agent-seo/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLI audit tool for AI visibility scoring",
   "license": "MIT",
   "repository": {
