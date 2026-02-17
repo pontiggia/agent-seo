@@ -1,5 +1,6 @@
 {
-  "name": "devtoolbox",
+  "name": "agent-seo-docs",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -14,8 +15,8 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
-    "@types/node": "^22.0.0"
+    "typescript": "^5.7.0"
   }
 }

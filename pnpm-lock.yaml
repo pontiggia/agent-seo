@@ -36,7 +36,7 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@22.19.11)(jsdom@26.1.0)(tsx@4.21.0)
 
-  examples/devtoolbox:
+  examples/docs:
     dependencies:
       '@agent-seo/core':
         specifier: workspace:*
