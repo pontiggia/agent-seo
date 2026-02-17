@@ -109,6 +109,11 @@ const AI_BOT_REGISTRY: BotEntry[] = [
   },
 ];
 
+const TOKEN_REGISTRY = AI_BOT_REGISTRY.map((entry) => ({
+  entry,
+  token: regexToToken(entry.pattern),
+}));
+
 /**
  * Detect if an incoming request is from an AI bot.
  *
@@ -128,8 +133,16 @@ export function detectAgent(
     return { isAIBot: false, bot: null, wantsMarkdown };
   }
 
+  const ua = userAgent.toLowerCase();
+
   // Check against our AI-specific registry first (more precise)
-  for (const entry of AI_BOT_REGISTRY) {
+  for (const { entry, token } of TOKEN_REGISTRY) {
+    if (token) {
+      if (ua.includes(token)) {
+        return { isAIBot: true, bot: entry.info, wantsMarkdown };
+      }
+      continue;
+    }
     if (entry.pattern.test(userAgent)) {
       return { isAIBot: true, bot: entry.info, wantsMarkdown };
     }
@@ -152,3 +165,9 @@ export function shouldServeMarkdown(
 }
 
 export { AI_BOT_REGISTRY };
+
+function regexToToken(pattern: RegExp): string | null {
+  const source = pattern.source;
+  if (/^[A-Za-z0-9-]+$/.test(source)) return source.toLowerCase();
+  return null;
+}

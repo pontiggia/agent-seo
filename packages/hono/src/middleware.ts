@@ -19,7 +19,10 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
       : null;
 
   return async (c: Context, next: Next) => {
-    const path = new URL(c.req.url).pathname;
+    const url = new URL(c.req.url);
+    const path = url.pathname;
+    const cacheKey = buildCacheKey(c.req.method, url);
+    const canCache = Boolean(cache) && isCacheableRequest(c);
 
     // Route: /llms.txt or /llms-full.txt
     if (path === '/llms.txt' || path === '/llms-full.txt') {
@@ -57,8 +60,8 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
 
     if (aiCtx.isAIBot || aiCtx.wantsMarkdown) {
       // Check cache
-      if (cache?.has(path)) {
-        const cached = cache.get(path)!;
+      if (canCache && cache!.has(cacheKey)) {
+        const cached = cache!.get(cacheKey)!;
         const headers = buildMarkdownHeaders(cached, options, path);
         return c.text(
           cached.markdown,
@@ -80,7 +83,9 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
         ...options.transform,
       });
 
-      cache?.set(path, result);
+      if (canCache && !hasSetCookie(c)) {
+        cache!.set(cacheKey, result);
+      }
       const headers = buildMarkdownHeaders(result, options, path);
       c.res = new Response(result.markdown, {
         status: 200,
@@ -91,4 +96,19 @@ export function agentSeo(options: AgentSeoOptions): MiddlewareHandler {
 
     await next();
   };
+}
+
+function buildCacheKey(method: string, url: URL): string {
+  return `${method.toUpperCase()}:${url.pathname}${url.search}`;
+}
+
+function isCacheableRequest(c: Context): boolean {
+  const method = c.req.method.toUpperCase();
+  if (method !== 'GET' && method !== 'HEAD') return false;
+  const hasAuth = Boolean(c.req.header('authorization') || c.req.header('cookie'));
+  return !hasAuth;
+}
+
+function hasSetCookie(c: Context): boolean {
+  return Boolean(c.res.headers.get('set-cookie'));
 }

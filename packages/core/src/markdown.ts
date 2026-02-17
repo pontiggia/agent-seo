@@ -83,8 +83,8 @@ export function htmlToMarkdown(html: string, options: MarkdownOptions = {}): str
       // Skip anchor-only links
       if (href.startsWith('#')) return content;
 
-      // Skip javascript: links
-      if (href.startsWith('javascript:')) return content;
+      // Strip dangerous protocol links entirely
+      if (href.startsWith('javascript:') || href.startsWith('data:text/html')) return '';
 
       let resolvedHref = href;
       if (url && !href.startsWith('http') && !href.startsWith('mailto:')) {

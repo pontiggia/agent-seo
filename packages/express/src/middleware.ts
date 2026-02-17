@@ -114,10 +114,12 @@ function interceptAndTransform(
   cache: ReturnType<typeof createCache> | null,
 ): void {
   const path = req.path;
+  const cacheKey = buildCacheKey(req);
+  const canCache = Boolean(cache) && isCacheableRequest(req);
 
   // Check cache first
-  if (cache?.has(path)) {
-    const cached = cache.get(path)!;
+  if (canCache && cache!.has(cacheKey)) {
+    const cached = cache!.get(cacheKey)!;
     sendMarkdownResponse(res, cached, options);
     return;
   }
@@ -153,7 +155,9 @@ function interceptAndTransform(
       ...options.transform,
     })
       .then((result) => {
-        cache?.set(path, result);
+        if (canCache && !hasSetCookie(res)) {
+          cache!.set(cacheKey, result);
+        }
 
         res.removeHeader('content-type');
         res.removeHeader('content-length');
@@ -228,4 +232,20 @@ function matchGlob(pattern: string, path: string): boolean {
     .replace(/\*/g, '[^/]*')
     .replace(/{{DOUBLESTAR}}/g, '.*');
   return new RegExp(`^${regex}$`).test(path);
+}
+
+function buildCacheKey(req: Request): string {
+  const url = req.originalUrl || req.url || req.path || '';
+  return `${req.method}:${url}`;
+}
+
+function isCacheableRequest(req: Request): boolean {
+  const method = req.method.toUpperCase();
+  if (method !== 'GET' && method !== 'HEAD') return false;
+  const hasAuth = Boolean(req.headers['authorization'] || req.headers['cookie']);
+  return !hasAuth;
+}
+
+function hasSetCookie(res: Response): boolean {
+  return Boolean(res.getHeader('set-cookie'));
 }

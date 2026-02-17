@@ -181,8 +181,29 @@ export async function GET(request) {
   const pagePath = searchParams.get('path') || '/';
 
   // Build the internal URL to fetch the original HTML page
-  const origin = process.env.NEXT_PUBLIC_BASE_URL || request.headers.get('x-forwarded-proto') + '://' + request.headers.get('host') || '${baseUrl}';
-  const pageUrl = new URL(pagePath, origin);
+  const origin = process.env.NEXT_PUBLIC_BASE_URL || '${baseUrl}';
+  if (!origin) {
+    return new Response('Base URL not configured', { status: 500 });
+  }
+
+  // Only allow same-origin, absolute paths (prevent SSRF via absolute or protocol-relative URLs)
+  const isValidPath =
+    pagePath.startsWith('/') &&
+    !pagePath.startsWith('//') &&
+    !pagePath.includes('://') &&
+    !pagePath.includes('\\\\');
+  if (!isValidPath) {
+    return new Response('Invalid path', { status: 400 });
+  }
+
+  const originUrl = new URL(origin);
+  if (originUrl.protocol !== 'http:' && originUrl.protocol !== 'https:') {
+    return new Response('Invalid base URL', { status: 500 });
+  }
+  const pageUrl = new URL(pagePath, originUrl.origin);
+  if (pageUrl.origin !== originUrl.origin) {
+    return new Response('Invalid origin', { status: 400 });
+  }
 
   try {
     // Fetch the page HTML from the local server with a normal User-Agent

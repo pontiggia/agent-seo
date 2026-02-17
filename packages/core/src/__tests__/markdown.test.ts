@@ -67,11 +67,18 @@ describe('htmlToMarkdown', () => {
     expect(md).toContain('Section');
   });
 
-  it('skips javascript: links', () => {
+  it('strips javascript: links entirely', () => {
     const html = '<a href="javascript:void(0)">Click</a>';
     const md = htmlToMarkdown(html);
     expect(md).not.toContain('javascript:');
-    expect(md).toContain('Click');
+    expect(md).not.toContain('Click');
+  });
+
+  it('strips data:text/html links entirely', () => {
+    const html = '<a href="data:text/html,<script>alert(1)</script>">Trap</a>';
+    const md = htmlToMarkdown(html);
+    expect(md).not.toContain('data:text/html');
+    expect(md).not.toContain('Trap');
   });
 
   it('collapses excessive blank lines', () => {

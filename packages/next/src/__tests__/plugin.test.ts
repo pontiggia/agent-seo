@@ -41,31 +41,34 @@ describe('createLlmsTxtHandler', () => {
   });
 });
 
+function mockNextRequest(url: string, headers: Record<string, string> = {}) {
+  const req = new Request(url, { headers });
+  const parsed = new URL(url);
+  (req as any).nextUrl = parsed;
+  return req;
+}
+
 describe('createAgentSeoMiddleware', () => {
-  it('detects AI bots and sets headers', () => {
+  it('rewrites AI bot requests and sets bot-friendly headers', () => {
     const middleware = createAgentSeoMiddleware();
-    const request = new Request('https://example.com/', {
-      headers: {
-        'user-agent': 'GPTBot/1.0',
-      },
+    const request = mockNextRequest('https://example.com/', {
+      'user-agent': 'GPTBot/1.0',
     });
 
-    const response = middleware(request);
-    expect(response.headers.get('X-Agent-Bot')).toBe('GPTBot');
-    expect(response.headers.get('X-Agent-Purpose')).toBe('training');
+    const response = middleware(request as any);
+    expect(response.headers.get('Content-Disposition')).toBe('inline');
+    expect(response.headers.get('X-Robots-Tag')).toBe('all');
     expect(response.headers.get('Vary')).toContain('Accept');
   });
 
-  it('does not set X-Agent-Bot for normal browsers', () => {
+  it('does not rewrite normal browser requests', () => {
     const middleware = createAgentSeoMiddleware();
-    const request = new Request('https://example.com/', {
-      headers: {
-        'user-agent': 'Mozilla/5.0 Chrome/120.0',
-      },
+    const request = mockNextRequest('https://example.com/', {
+      'user-agent': 'Mozilla/5.0 Chrome/120.0',
     });
 
-    const response = middleware(request);
-    expect(response.headers.get('X-Agent-Bot')).toBeNull();
+    const response = middleware(request as any);
+    expect(response.headers.get('Content-Disposition')).toBeNull();
     expect(response.headers.get('Vary')).toContain('Accept');
   });
 });

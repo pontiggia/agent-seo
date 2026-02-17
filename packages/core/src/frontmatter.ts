@@ -16,9 +16,9 @@ export function buildFrontmatter(input: FrontmatterInput): string {
   if (input.title) lines.push(`title: "${escapeYaml(input.title)}"`);
   if (input.description)
     lines.push(`description: "${escapeYaml(input.description)}"`);
-  if (input.url) lines.push(`url: "${input.url}"`);
-  if (input.lang) lines.push(`lang: "${input.lang}"`);
-  if (input.lastModified) lines.push(`lastModified: "${input.lastModified}"`);
+  if (input.url) lines.push(`url: "${escapeYaml(input.url)}"`);
+  if (input.lang) lines.push(`lang: "${escapeYaml(input.lang)}"`);
+  if (input.lastModified) lines.push(`lastModified: "${escapeYaml(input.lastModified)}"`);
 
   // Extract structured data from JSON-LD
   if (input.jsonLd?.length) {
@@ -26,9 +26,10 @@ export function buildFrontmatter(input: FrontmatterInput): string {
 
     const primaryType = primary?.['@type'];
     if (primaryType) {
-      lines.push(
-        `schema: "${Array.isArray(primaryType) ? primaryType[0] : primaryType}"`,
-      );
+      const typeStr = Array.isArray(primaryType) ? primaryType[0] : primaryType;
+      if (typeof typeStr === 'string') {
+        lines.push(`schema: "${escapeYaml(typeStr)}"`);
+      }
     }
 
     // Author
@@ -40,10 +41,10 @@ export function buildFrontmatter(input: FrontmatterInput): string {
 
     // Dates
     const datePublished = primary?.datePublished as string | undefined;
-    if (datePublished) lines.push(`datePublished: "${datePublished}"`);
+    if (datePublished) lines.push(`datePublished: "${escapeYaml(datePublished)}"`);
 
     const dateModified = primary?.dateModified as string | undefined;
-    if (dateModified) lines.push(`dateModified: "${dateModified}"`);
+    if (dateModified) lines.push(`dateModified: "${escapeYaml(dateModified)}"`);
   }
 
   lines.push('---');
@@ -51,5 +52,9 @@ export function buildFrontmatter(input: FrontmatterInput): string {
 }
 
 function escapeYaml(str: string): string {
-  return str.replace(/"/g, '\\"').replace(/\n/g, ' ');
+  // Replace backslashes first, then double quotes, then collapse newlines
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, ' ');
 }

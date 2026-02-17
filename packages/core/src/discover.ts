@@ -1,4 +1,5 @@
-import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, lstatSync, realpathSync } from 'node:fs';
+import type { Stats } from 'node:fs';
 import { join, sep } from 'node:path';
 import type { LlmsTxtRoute } from './types.js';
 
@@ -100,7 +101,13 @@ export function discoverNextRoutes(
   }
 
   const routes: LlmsTxtRoute[] = [];
-  scanAppDir(appDir, appDir, routes, exclude, sectionStrategy, defaultSection);
+  let rootReal = appDir;
+  try {
+    rootReal = realpathSync(appDir);
+  } catch {
+    return routes;
+  }
+  scanAppDir(appDir, appDir, rootReal, routes, exclude, sectionStrategy, defaultSection);
 
   // Sort: homepage first, then alphabetically
   routes.sort((a, b) => {
@@ -115,6 +122,7 @@ export function discoverNextRoutes(
 function scanAppDir(
   rootDir: string,
   currentDir: string,
+  rootReal: string,
   routes: LlmsTxtRoute[],
   exclude: string[],
   sectionStrategy: 'directory' | ((path: string) => string),
@@ -124,9 +132,24 @@ function scanAppDir(
 
   for (const entry of entries) {
     const fullPath = join(currentDir, entry);
-    const stat = statSync(fullPath);
+    let stat: Stats;
+    try {
+      stat = lstatSync(fullPath);
+    } catch {
+      continue;
+    }
+
+    if (stat.isSymbolicLink()) continue;
 
     if (stat.isDirectory()) {
+      let realDir = fullPath;
+      try {
+        realDir = realpathSync(fullPath);
+      } catch {
+        continue;
+      }
+      if (!isWithinRoot(realDir, rootReal)) continue;
+
       // Skip private directories (prefixed with _) and known non-page dirs
       const baseName = entry.toLowerCase();
       if (
@@ -141,6 +164,7 @@ function scanAppDir(
       scanAppDir(
         rootDir,
         fullPath,
+        rootReal,
         routes,
         exclude,
         sectionStrategy,
@@ -245,7 +269,7 @@ export function extractMetadataFromSource(source: string): {
     /title\s*:\s*(?:'([^']*)'|"([^"]*)"|`([^`]*)`)/,
   );
   if (titleMatch) {
-    title = titleMatch[1] || titleMatch[2] || titleMatch[3] || '';
+    title = sanitizeMetadataValue(titleMatch[1] || titleMatch[2] || titleMatch[3] || '');
   }
 
   // Extract description
@@ -253,7 +277,7 @@ export function extractMetadataFromSource(source: string): {
     /description\s*:\s*(?:'([^']*)'|"([^"]*)"|`([^`]*)`)/,
   );
   if (descMatch) {
-    description = descMatch[1] || descMatch[2] || descMatch[3] || '';
+    description = sanitizeMetadataValue(descMatch[1] || descMatch[2] || descMatch[3] || '');
   }
 
   return { title, description };
@@ -372,7 +396,14 @@ export function discoverFilesystemRoutes(
     return [];
   }
 
-  const htmlFiles = findHtmlFiles(dir);
+  let rootReal = dir;
+  try {
+    rootReal = realpathSync(dir);
+  } catch {
+    return [];
+  }
+
+  const htmlFiles = findHtmlFiles(dir, rootReal);
   const routes: LlmsTxtRoute[] = [];
 
   for (const filePath of htmlFiles) {
@@ -394,7 +425,7 @@ export function discoverFilesystemRoutes(
     try {
       const html = readFileSync(filePath, 'utf-8');
       const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-      title = titleMatch?.[1]?.trim() || '';
+      title = sanitizeMetadataValue(titleMatch?.[1]?.trim() || '');
     } catch {
       // ignore
     }
@@ -415,23 +446,53 @@ export function discoverFilesystemRoutes(
   return routes;
 }
 
-function findHtmlFiles(dir: string): string[] {
+function findHtmlFiles(dir: string, rootReal: string): string[] {
   const results: string[] = [];
   if (!existsSync(dir)) return results;
 
   const entries = readdirSync(dir);
   for (const entry of entries) {
     const fullPath = join(dir, entry);
-    const stat = statSync(fullPath);
+    let stat: Stats;
+    try {
+      stat = lstatSync(fullPath);
+    } catch {
+      continue;
+    }
+
+    if (stat.isSymbolicLink()) continue;
 
     if (stat.isDirectory()) {
       if (['node_modules', '.next', '.git', 'dist', '.turbo'].includes(entry))
         continue;
-      results.push(...findHtmlFiles(fullPath));
+      let realDir = fullPath;
+      try {
+        realDir = realpathSync(fullPath);
+      } catch {
+        continue;
+      }
+      if (!isWithinRoot(realDir, rootReal)) continue;
+      results.push(...findHtmlFiles(fullPath, rootReal));
     } else if (entry.endsWith('.html')) {
       results.push(fullPath);
     }
   }
 
   return results;
+}
+
+function isWithinRoot(realPath: string, rootReal: string): boolean {
+  if (realPath === rootReal) return true;
+  const normalizedRoot = rootReal.endsWith(sep) ? rootReal : rootReal + sep;
+  return realPath.startsWith(normalizedRoot);
+}
+
+function sanitizeMetadataValue(value: string): string {
+  if (!value) return '';
+  const sanitized = value
+    .replace(/[\u0000-\u001F\u007F]/g, ' ')
+    .replace(/[<>]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return sanitized.length > 200 ? sanitized.slice(0, 200) : sanitized;
 }
